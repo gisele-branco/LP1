@@ -3,6 +3,8 @@ import java.util.Scanner;
 public class Menu {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
+        // Instancia o objeto de configurações e carrega as configurações a partir do arquivo
         Configuracoes configuracoes = new Configuracoes(
                 "C:\\Users\\Lenovo\\IdeaProjects\\Projeto\\TXTS",
                 ';',
@@ -10,6 +12,7 @@ public class Menu {
                 2,
                 5.50
         );
+        configuracoes.carregarConfiguracoes(); // Carregar configurações a partir do arquivo
 
         Logs.registrar("Aplicação iniciada.");
 
@@ -40,7 +43,7 @@ public class Menu {
                     Logs.registrar("Acessado consulta de Estatísticas e Desempenho Financeiro.");
                     break;
                 case 4:
-                    configuracoes.exibirMenu(scanner);
+                    configuracoes.exibirMenu(scanner); // Acessa o menu de configurações
                     break;
                 case 5:
                     Logs.exibirLogs();

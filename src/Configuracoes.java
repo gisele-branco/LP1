@@ -7,6 +7,7 @@ public class Configuracoes {
     private int unidadesTempoPorDia;
     private int unidadesConsumoPrato;
     private double custoClienteNaoAtendido;
+    private static final String CONFIG_FILE = "C:\\Users\\Lenovo\\IdeaProjects\\Projeto\\TXTS\\configuracoes.txt";
     private static final String SENHA_FILE = "C:\\Users\\Lenovo\\IdeaProjects\\Projeto\\TXTS\\Palavras-Passe\\senha.txt";
 
     public Configuracoes(String caminhoFicheiros, char separadorFicheiros, int unidadesTempoPorDia,
@@ -44,6 +45,42 @@ public class Configuracoes {
             Logs.registrar("Senha do administrador alterada.");
         } catch (IOException e) {
             System.out.println("Erro ao salvar a senha: " + e.getMessage());
+        }
+    }
+
+    public void salvarConfiguracoes() {
+        try {
+            File file = new File(CONFIG_FILE);
+            file.getParentFile().mkdirs();
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                writer.write(caminhoFicheiros + "\n");
+                writer.write(separadorFicheiros + "\n");
+                writer.write(unidadesTempoPorDia + "\n");
+                writer.write(unidadesConsumoPrato + "\n");
+                writer.write(custoClienteNaoAtendido + "\n");
+            }
+            Logs.registrar("Configurações salvas.");
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar configurações: " + e.getMessage());
+        }
+    }
+
+    public void carregarConfiguracoes() {
+        File file = new File(CONFIG_FILE);
+
+        if (!file.exists()) {
+            salvarConfiguracoes();
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(CONFIG_FILE))) {
+            caminhoFicheiros = reader.readLine();
+            separadorFicheiros = reader.readLine().charAt(0);
+            unidadesTempoPorDia = Integer.parseInt(reader.readLine());
+            unidadesConsumoPrato = Integer.parseInt(reader.readLine());
+            custoClienteNaoAtendido = Double.parseDouble(reader.readLine());
+        } catch (IOException e) {
+            System.out.println("Erro ao carregar configurações: " + e.getMessage());
         }
     }
 
@@ -115,6 +152,9 @@ public class Configuracoes {
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
+
+            // Salvar as novas configurações após cada alteração
+            salvarConfiguracoes();
         }
     }
 
