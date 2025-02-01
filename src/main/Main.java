@@ -1,5 +1,7 @@
 package main;
 
+import gestao_dia_a_dia.Simulacao;
+import estatisticas.Estatisticas;
 import gestao_menus.GestaoMenus;
 import gestao_mesas.GestaoMesas;
 public class Main {
@@ -33,11 +35,44 @@ public class Main {
             totalLugares += capacidade;
         }
 
-        System.out.println("\nTotal de mesas: 50");
+        System.out.println("\nTotal de mesas: 25");
         System.out.println("Total de lugares: " + totalLugares);
         System.out.println("\n--- Lista de Mesas ---");
         gestaoMesas.listarMesas();
 
-    }
+        Estatisticas estatisticas = new Estatisticas();
 
+        /** Simular alguns dados
+         estatisticas.adicionarClientesAtendidos(10);
+         estatisticas.adicionarPedidoAtendido(50.0, 20.0);
+         estatisticas.adicionarPedidoAtendido(30.0, 15.0);
+         estatisticas.adicionarPedidoNaoAtendido(); */
+
+        System.out.println("Total de clientes atendidos: " + estatisticas.getTotalClientesAtendidos());
+        System.out.println("Total de pedidos atendidos: " + estatisticas.getTotalPedidosAtendidos());
+        System.out.println("Total de pedidos não atendidos: " + estatisticas.getTotalPedidosNaoAtendidos());
+        System.out.println("Total faturado: " + estatisticas.getTotalFaturado());
+        System.out.println("Total gastos: " + estatisticas.getTotalGastos());
+        System.out.println("Lucro: " + estatisticas.getLucro());
+
+        Simulacao simulacao = new Simulacao(10, 5); // 10 unidades de tempo, 5 mesas
+
+        /** Iniciar o dia (ler clientes do arquivo)*/
+        simulacao.iniciarDia("clientes.txt");
+
+        /**Simular o avanço do tempo*/
+        for (int i = 0; i < 12; i++) { /** Pode Avançar 12 unidades de tempo (2 a mais que o limite)*/
+            simulacao.avancarTempo();
+
+            if (i % 2 == 0) { /**A cada 2 unidades de tempo, tenta atribuir uma mesa*/
+                simulacao.atribuirMesa();
+            }
+
+            /**Liberar uma mesa após 5 unidades de tempo*/
+            if (i == 5) {
+                simulacao.liberarMesa(1); // Libera a mesa 1
+            }
+        }
+        simulacao.iniciarDia(".idea/clientes.txt");
+    }
 }
