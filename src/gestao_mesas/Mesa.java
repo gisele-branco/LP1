@@ -1,9 +1,15 @@
 package gestao_mesas;
 
+import gestao_menus.Prato;
+
+import static main.Main.gestaoMesas;
+
 public class Mesa {
-    private int numeroMesa;
-    private int capacidade;
-    private boolean ocupada;
+    public int numeroMesa;
+    public int capacidade;
+    public boolean ocupada;
+    public QuantidadePrato[] pratos;
+
 
     public Mesa(int numeroMesa, int capacidade) {
         this.numeroMesa = numeroMesa;
@@ -30,5 +36,25 @@ public class Mesa {
     @Override
     public String toString() {
         return "Mesa " + numeroMesa + " (Capacidade: " + capacidade + ") - " + (ocupada ? "Ocupada" : "Livre");
+    }
+
+    public void AdiconarPrato_Mesa(Prato prato, int mesaId){
+
+        boolean executar = true;
+        String nomeprato = prato.getNome();
+
+        for (int i = 0; i < gestaoMesas.mesas[mesaId-1].pratos.length; i++) {
+            String nome = gestaoMesas.mesas[mesaId-1].pratos[i].prato.getNome();
+            if(nome.equals(nomeprato)){
+                gestaoMesas.mesas[mesaId-1].pratos[i].quantidade ++;
+                executar = false;
+                break;
+            }
+        }
+
+        if (executar){
+            gestaoMesas.mesas[mesaId-1].pratos[gestaoMesas.mesas[mesaId-1].pratos.length].prato = prato;
+            gestaoMesas.mesas[mesaId-1].pratos[gestaoMesas.mesas[mesaId-1].pratos.length].quantidade = 1;
+        }
     }
 }
