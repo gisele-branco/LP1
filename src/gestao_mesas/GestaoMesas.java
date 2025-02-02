@@ -1,8 +1,8 @@
 package gestao_mesas;
 
 public class GestaoMesas {
-    private Mesa[] mesas;
-    private int totalMesas;
+    public static Mesa[] mesas;
+    private static int totalMesas;
 
     public GestaoMesas(int maxMesas) {
         mesas = new Mesa[maxMesas];
@@ -17,7 +17,6 @@ public class GestaoMesas {
         }
         return false;
     }
-
     public void listarMesas() {
         for (int i = 0; i < totalMesas; i++) {
             System.out.println(mesas[i]);
@@ -33,4 +32,6 @@ public class GestaoMesas {
         }
         return -1;
     }
+
+    public static Mesa[] GetMesas() { return mesas; }
 }

@@ -1,20 +1,21 @@
 package configuracoes;
 
-import java.util.Scanner;
-import gestao_mesas.GestaoMesas;
-import gestao_menus.GestaoMenus;
-import gestao_dia_a_dia.SimulacaoDia;
 import estatisticas.Estatisticas;
+import gestao_dia_a_dia.SimulacaoDia;
+import gestao_menus.GestaoMenus;
+import gestao_mesas.GestaoMesas;
+
+import java.util.Scanner;
 
 public class Console {
     public static void main(String[] args) {
-        GestaoMesas gestaoMesas = new GestaoMesas();
-        GestaoMenus gestaoMenus = new GestaoMenus();
+        GestaoMesas gestaoMesas = new GestaoMesas(25);
+        GestaoMenus gestaoMenus = new GestaoMenus(10);
         Estatisticas estatisticas = new Estatisticas();
         SimulacaoDia simulacaoDia = new SimulacaoDia(gestaoMesas);
 
         Scanner scanner = new Scanner(System.in);
-        int opcao;
+        int opcao = 0;
 
         do {
             System.out.println("\n--- Menu Principal ---");

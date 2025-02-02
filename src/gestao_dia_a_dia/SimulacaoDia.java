@@ -40,10 +40,10 @@ public class SimulacaoDia {
 
                 boolean reservaFeita = false;
 
-                for (Mesa mesa : gestao_mesas.getMesas().values()) {
+                for (Mesa mesa : gestao_mesas.GestaoMesas.GetMesas()) {
                     if (!mesa.isOcupada() && mesa.getCapacidade() >= numPessoas) {
                         mesa.setOcupada(true);
-                        System.out.println("Reserva '" + nomeReserva + "' encaminhada para a mesa " + mesa.getId());
+                        System.out.println("Reserva '" + nomeReserva + "' encaminhada para a mesa " + mesa.getNumeroMesa());
                         reservaFeita = true;
                         break;
                     }
