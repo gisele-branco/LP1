@@ -1,18 +1,12 @@
 package configuracoes;
 
-import estatisticas.Estatisticas;
 import gestao_dia_a_dia.SimulacaoDia;
-import gestao_menus.GestaoMenus;
-import gestao_mesas.GestaoMesas;
+import main.Main;
 
 import java.util.Scanner;
 
-public class Console {
-    public static void main(String[] args) {
-        GestaoMesas gestaoMesas = new GestaoMesas(25);
-        GestaoMenus gestaoMenus = new GestaoMenus(10);
-        Estatisticas estatisticas = new Estatisticas();
-        SimulacaoDia simulacaoDia = new SimulacaoDia(gestaoMesas);
+public class Console extends Main {
+    public Console(){
 
         Scanner scanner = new Scanner(System.in);
         int opcao = 0;
@@ -23,6 +17,7 @@ public class Console {
             System.out.println("2. Gerir Menus");
             System.out.println("3. Iniciar Simulação do Dia");
             System.out.println("4. Consultar Estatísticas");
+            System.out.println("9. Avancar uma unidade de tempo (tempo atual:" + simulacao.tempoAtual + ")" );
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
 
@@ -43,7 +38,7 @@ public class Console {
                     break;
                 case 3:
                     System.out.println("Iniciando simulação do dia...");
-                    simulacaoDia.processarReservas("clientes.txt");
+                    SimulacaoDia.processarReservas("clientes.txt");
                     break;
                 case 4:
                     System.out.println("\n=== Estatísticas ===");
@@ -53,6 +48,9 @@ public class Console {
                     System.out.println("Total faturado: R$ " + estatisticas.getTotalFaturado());
                     System.out.println("Total gasto: R$ " + estatisticas.getTotalGastos());
                     System.out.println("Lucro: R$ " + estatisticas.getLucro());
+                    break;
+                case 9:
+                    simulacao.avancarTempo();
                     break;
                 case 0:
                     System.out.println("Saindo...");

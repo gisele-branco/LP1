@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Simulacao {
     private int unidadesTempoDia;
-    private int tempoAtual;
+    public int tempoAtual;
     private int totalMesas;
     private boolean[] mesasOcupadas;
     private int[] capacidadeMesas;
