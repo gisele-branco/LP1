@@ -10,48 +10,53 @@ public class Simulacao {
     private int totalMesas;
     private boolean[] mesasOcupadas;
     private int[] capacidadeMesas;
+    private String[][] clientesEmEspera;
+    private int totalClientesEspera;
 
-    public Simulacao(int unidadesTempoDia, int totalMesas) {
+    public Simulacao(int unidadesTempoDia, int totalMesas, int maxClientesEspera) {
         this.unidadesTempoDia = unidadesTempoDia;
         this.tempoAtual = 0;
         this.totalMesas = totalMesas;
         this.mesasOcupadas = new boolean[totalMesas];
         this.capacidadeMesas = new int[totalMesas];
+        this.clientesEmEspera = new String[maxClientesEspera][7];
+        this.totalClientesEspera = 0;
+
         for (int i = 0; i < totalMesas; i++) {
             capacidadeMesas[i] = 4;
         }
     }
 
-    public void iniciarDia(String caminhoArquivoClientes) {
+    public void iniciarDia(String clientes ) {
         try {
-            File arquivo = new File(caminhoArquivoClientes);
+            File arquivo = new File("clientes.txt");
             Scanner scanner = new Scanner(arquivo);
 
             while (scanner.hasNextLine()) {
                 String linha = scanner.nextLine();
                 String[] dadosCliente = linha.split(",");
 
+
+                if (dadosCliente.length < 7) {
+                    System.out.println("Erro: Dados inválidos no arquivo para cliente.");
+                    continue;
+                }
+
                 String nome = dadosCliente[0];
                 int numeroPessoas = Integer.parseInt(dadosCliente[1]);
-                int entradas = Integer.parseInt(dadosCliente[2]);
-                int sobremesas = Integer.parseInt(dadosCliente[3]);
-                int tempoEsperaMesa = Integer.parseInt(dadosCliente[4]);
-                int tempoEsperaAtendimento = Integer.parseInt(dadosCliente[5]);
                 int tempoChegada = Integer.parseInt(dadosCliente[6]);
 
-                System.out.println("Cliente chegou: " + nome);
+                System.out.println("\nCliente chegou: " + nome);
                 System.out.println("Número de pessoas: " + numeroPessoas);
-                System.out.println("Entradas: " + entradas);
-                System.out.println("Sobremesas: " + sobremesas);
-                System.out.println("Tempo de espera para mesa: " + tempoEsperaMesa);
-                System.out.println("Tempo de espera para atendimento: " + tempoEsperaAtendimento);
                 System.out.println("Tempo de chegada: " + tempoChegada);
                 System.out.println("-----------------------------");
 
+                /**Se chegou no tempo certo, tenta atribuir mesa imediatamente*/
                 if (tempoChegada == tempoAtual) {
                     atribuirMesa(nome, numeroPessoas, tempoChegada);
                 } else {
-                    System.out.println("Cliente " + nome + " chegou no tempo errado.");
+                    /**Se não pode ser atendido agora, adiciona à lista de espera*/
+                    adicionarClienteEspera(dadosCliente);
                 }
             }
 
@@ -64,31 +69,54 @@ public class Simulacao {
     public void avancarTempo() {
         if (tempoAtual < unidadesTempoDia) {
             tempoAtual++;
-            System.out.println("Tempo avançado: " + tempoAtual);
-            simularEventos();
+            System.out.println("\nTempo avançado: " + tempoAtual);
+            processarClientesEmEspera();
         } else {
             System.out.println("O dia já terminou!");
         }
     }
 
-    private void simularEventos() {
-        if (tempoAtual == 1) {
-            notificar("Cliente João chegou ao restaurante.");
-            atribuirMesa("João", 4, 1);
-        }
+    private void processarClientesEmEspera() {
+        for (int i = 0; i < totalClientesEspera; i++) {
+            String nome = clientesEmEspera[i][0];
+            int numeroPessoas = Integer.parseInt(clientesEmEspera[i][1]);
+            int tempoChegada = Integer.parseInt(clientesEmEspera[i][6]);
 
-        if (tempoAtual == 3) {
-            notificar("Prato X está pronto.");
-        }
-
-        if (tempoAtual == 5) {
-            liberarMesa(1);
+            if (tempoChegada == tempoAtual) {
+                boolean mesaAtribuida = atribuirMesa(nome, numeroPessoas, tempoChegada);
+                if (mesaAtribuida) {
+                    removerClienteEspera(i);
+                    i--;
+                }
+            }
         }
     }
 
+    private void adicionarClienteEspera(String[] cliente) {
+        if (totalClientesEspera < clientesEmEspera.length) {
+            clientesEmEspera[totalClientesEspera] = cliente;
+            totalClientesEspera++;
+        } else {
+            System.out.println("Fila de espera cheia! Cliente " + cliente[0] + " não pode ser adicionado.");
+        }
+    }
+
+    private void removerClienteEspera(int indice) {
+        if (indice < 0 || indice >= totalClientesEspera) {
+            return;
+        }
+
+        for (int i = indice; i < totalClientesEspera - 1; i++) {
+            clientesEmEspera[i] = clientesEmEspera[i + 1];
+        }
+
+        clientesEmEspera[totalClientesEspera - 1] = null;
+        totalClientesEspera--;
+    }
+
     public boolean atribuirMesa(String nomeCliente, int numeroPessoas, int tempoChegada) {
-        if (tempoChegada != tempoAtual) {
-            System.out.println("Cliente " + nomeCliente + " chegou no tempo errado.");
+        if (tempoChegada > tempoAtual) {
+            System.out.println("Cliente " + nomeCliente + " ainda não chegou.");
             return false;
         }
 
@@ -101,8 +129,7 @@ public class Simulacao {
             }
         }
 
-        System.out.println("Nenhuma mesa disponível para o cliente " + nomeCliente + ".");
-        notificar("Cliente " + nomeCliente + " não pôde ser atendido. Todas as mesas estão ocupadas.");
+        System.out.println("Nenhuma mesa disponível para " + nomeCliente + ".");
         return false;
     }
 
