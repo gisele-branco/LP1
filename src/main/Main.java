@@ -1,20 +1,27 @@
 package main;
 
-
+import configuracoes.Console;
+import estatisticas.Estatisticas;
+import gestao_dia_a_dia.Simulacao;
+import gestao_dia_a_dia.SimulacaoDia;
 import gestao_menus.GestaoMenus;
 import gestao_mesas.GestaoMesas;
 
 public class Main {
+
+    public static Estatisticas estatisticas = new Estatisticas();
+    public static GestaoMenus gestaoMenus = new GestaoMenus(10);
+    public static GestaoMesas gestaoMesas = new GestaoMesas(25);
+    public static SimulacaoDia simulacaoDia = new SimulacaoDia(gestaoMesas);
+    public static Simulacao simulacao = new Simulacao(240, 25, 10);
+
+    public static int tempoMaximoEspera = 20;
+
     public static void main(String[] args) {
 
-
-
-        GestaoMenus gestaoMenus = new GestaoMenus(10);
         gestaoMenus.carregarMenu("menu.txt");
 
-
         /**Inicializa a gestão de menus*/
-
 
         /** Entradas */
         gestaoMenus.adicionarPrato("Pão de Queijo", "entrada", 1.0, 3.0, 2);
@@ -35,7 +42,6 @@ public class Main {
         gestaoMenus.listarPratos();
 
         /*Inicializa a gestão de mesas*/
-        GestaoMesas gestaoMesas = new GestaoMesas(25);
 
         int totalLugares = 0;
         for (int i = 1; i <= 25; i++) {
@@ -49,7 +55,6 @@ public class Main {
         System.out.println("\n--- Lista de Mesas ---");
         gestaoMesas.listarMesas();
 
-
-            }
-
+        Console console = new Console();
     }
+}

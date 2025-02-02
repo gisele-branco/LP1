@@ -14,7 +14,7 @@ public class SimulacaoDia {
         this.gestaoMesas = gestaoMesas;
     }
 
-    public void processarReservas(String clientes) {
+    public static void processarReservas(String clientes) {
         try {
             File arquivo = new File("clientes,txt");
             Scanner scanner = new Scanner(arquivo);
